@@ -1,36 +1,68 @@
-import { useState, useRef, useEffect } from 'react'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { ReactLenis } from 'lenis/react'
+import React, { useState, useRef, useEffect } from "react"
+import gsap from "gsap"
+import { ScrollTrigger } from "gsap/ScrollTrigger"
+import { ReactLenis } from "lenis/react"
 
-import Loader from '@components/Loader'
-import CustomCursor from '@components/CustomCursor'
-import Navbar from '@components/Navbar'
-import MobileMenu from '@components/MobileMenu'
-import Hero from '@components/Hero'
-import About from '@components/About'
-import Services from '@components/Services'
-import WorkShowcase from '@components/WorkShowcase'
-import Testimonials from '@components/Testimonials'
-import Contact from '@components/Contact'
-import Footer from '@components/Footer'
+// Context & Styles
+import { SocietyProvider, useSociety } from "./context/SocietyContext"
+import "./styles/global.css"
+import "./styles/layout.css"
+import "./styles/dashboard.css"
+
+// Shell Components
+import Loader from "@components/Loader"
+import CustomCursor from "@components/CustomCursor"
+import Sidebar from "@components/Sidebar"
+import Header from "@components/Header"
+
+// Sub-Panel Views
+import ResidentDashboard from "@components/ResidentDashboard"
+import AdminDashboard from "@components/AdminDashboard"
+import SecurityManager from "@components/SecurityManager"
+import ParkingSpace from "@components/ParkingSpace"
+import UtilityTracker from "@components/UtilityTracker"
+import FinanceLedger from "@components/FinanceLedger"
+import MaintenanceHub from "@components/MaintenanceHub"
+import CourierLocker from "@components/CourierLocker"
+import GovernancePolls from "@components/GovernancePolls"
+
+// Mobile Icons
+import { 
+  LayoutDashboard, 
+  ShieldCheck, 
+  Car, 
+  Zap, 
+  Receipt,
+  Wrench,
+  Package,
+  Vote,
+  AlertTriangle 
+} from "lucide-react"
 
 gsap.registerPlugin(ScrollTrigger)
 
-export default function App() {
+function AppContent() {
   const [isLoading, setIsLoading] = useState(true)
   const [loaderDone, setLoaderDone] = useState(false)
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
   const lenisRef = useRef(null)
 
-  // Sync Lenis with GSAP ticker for perfect ScrollTrigger alignment
+  const { 
+    activeTab, 
+    setActiveTab, 
+    role, 
+    sosActive, 
+    sosTower, 
+    triggerSOS,
+    cancelSOS 
+  } = useSociety()
+
+  // Coordinate Lenis smooth scrolling and GSAP trigger frames
   useEffect(() => {
     function update(time) {
       lenisRef.current?.lenis?.raf(time * 1000)
     }
     gsap.ticker.add(update)
 
-    // Give ScrollTrigger a moment to recalculate after loader exit
     const refreshTimeout = setTimeout(() => {
       ScrollTrigger.refresh()
     }, 200)
@@ -41,10 +73,9 @@ export default function App() {
     }
   }, [])
 
-  // Refresh ScrollTrigger when loader finishes
+  // Scroll refresh when loader completes
   useEffect(() => {
     if (loaderDone) {
-      // Delay refresh to let all sections render and settle
       const timer = setTimeout(() => {
         ScrollTrigger.refresh(true)
       }, 500)
@@ -54,12 +85,43 @@ export default function App() {
 
   const handleLoaderComplete = () => {
     setIsLoading(false)
-    // Small delay before marking loader as done
-    // so Hero can start its entrance animation smoothly
     setTimeout(() => {
       setLoaderDone(true)
     }, 100)
   }
+
+  // Render the current panel view based on activeTab
+  const renderActiveView = () => {
+    switch (activeTab) {
+      case "dashboard":
+        return role === "resident" ? <ResidentDashboard /> : <AdminDashboard />
+      case "security":
+        return <SecurityManager />
+      case "parking":
+        return <ParkingSpace />
+      case "utilities":
+        return <UtilityTracker />
+      case "finance":
+        return <FinanceLedger />
+      case "maintenance":
+        return <MaintenanceHub />
+      case "courier":
+        return <CourierLocker />
+      case "governance":
+        return <GovernancePolls />
+      default:
+        return role === "resident" ? <ResidentDashboard /> : <AdminDashboard />
+    }
+  }
+
+  // Mobile Bottom navigation bar configuration
+  const mobileNavItems = [
+    { id: "dashboard", label: "Overview", icon: LayoutDashboard },
+    { id: "security", label: "Security", icon: ShieldCheck },
+    { id: "parking", label: "Parking", icon: Car },
+    { id: "utilities", label: "Utilities", icon: Zap },
+    { id: "finance", label: "Ledger", icon: Receipt },
+  ]
 
   return (
     <ReactLenis
@@ -70,46 +132,81 @@ export default function App() {
         lerp: 0.1,
         duration: 1.4,
         smoothWheel: true,
-        syncTouch: false,
-        touchMultiplier: 2,
       }}
     >
-      {/* Skip to content link for accessibility */}
-      <a href="#main-content" className="skip-link">
-        Skip to main content
-      </a>
-
-      {/* Custom cursor — desktop only */}
+      {/* Premium custom mouse dot pointer (disabled on touch) */}
       <CustomCursor />
 
-      {/* Loading screen */}
+      {/* Rebranded high-fidelity loading curtains */}
       {isLoading && <Loader onComplete={handleLoaderComplete} />}
 
-      {/* Navigation */}
-      <Navbar
-        isMenuOpen={isMenuOpen}
-        setIsMenuOpen={setIsMenuOpen}
-        lenisRef={lenisRef}
-      />
+      {/* Main SaaS Frame Container */}
+      <div className="app-container">
+        
+        {/* collapsible sidebar */}
+        <Sidebar />
 
-      {/* Mobile navigation overlay */}
-      <MobileMenu
-        isOpen={isMenuOpen}
-        onClose={() => setIsMenuOpen(false)}
-        lenisRef={lenisRef}
-      />
+        {/* Workspace panel frame */}
+        <div className="main-workspace">
+          
+          {/* Critical Emergency SOS broadcast banner */}
+          {sosActive && (
+            <div className="sos-overlay">
+              <div className="sos-message">
+                <AlertTriangle size={18} className="animate-pulse" style={{ color: "#ef4444" }} />
+                <span>CRITICAL ALARM: SOS broadcast initiated in {sosTower}! Emergency dispatched.</span>
+              </div>
+              <button onClick={cancelSOS} className="sos-cancel-btn">
+                Clear SOS Alarm
+              </button>
+            </div>
+          )}
 
-      {/* Main content */}
-      <main id="main-content">
-        <Hero loaderDone={loaderDone} />
-        <About />
-        <Services />
-        <WorkShowcase />
-        <Testimonials />
-        <Contact />
-      </main>
+          {/* Core Header Switcher and alert bell */}
+          <Header />
 
-      <Footer lenisRef={lenisRef} />
+          {/* Dynamic Scroll View Area */}
+          <main id="main-content" style={{ flex: 1, paddingBottom: "3rem" }}>
+            {renderActiveView()}
+          </main>
+
+          {/* Floating SOS Trigger for Mobile view */}
+          <button 
+            className="mobile-sos-float" 
+            onClick={() => triggerSOS(role === "resident" ? "Tower B" : "Security Post")}
+            aria-label="Trigger panic button SOS"
+          >
+            <AlertTriangle size={24} />
+          </button>
+
+          {/* Handheld Mobile Bottom Tab bar */}
+          <nav className="mobile-bottom-nav">
+            {mobileNavItems.map((item) => {
+              const Icon = item.icon
+              const isActive = activeTab === item.id
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => setActiveTab(item.id)}
+                  className={`mobile-bottom-btn ${isActive ? "is-active" : ""}`}
+                >
+                  <Icon size={18} />
+                  <span>{item.label}</span>
+                </button>
+              )
+            })}
+          </nav>
+
+        </div>
+      </div>
     </ReactLenis>
+  )
+}
+
+export default function App() {
+  return (
+    <SocietyProvider>
+      <AppContent />
+    </SocietyProvider>
   )
 }

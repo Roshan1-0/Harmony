@@ -105,7 +105,7 @@ export default function Loader({ onComplete }) {
           0
         </span>
         <span className="loader-brand" ref={brandRef}>
-          Harmony
+          Echo Dwell
         </span>
       </div>
 

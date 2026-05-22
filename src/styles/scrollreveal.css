@@ -1,7 +1,0 @@
-/* ============================================
-   ScrollReveal — Scroll-triggered reveal wrapper
-   ============================================ */
-
-.scroll-reveal {
-  will-change: transform, opacity;
-}
