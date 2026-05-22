@@ -1,0 +1,61 @@
+/* ============================================
+   Loader — Full-screen loading overlay
+   ============================================ */
+
+.loader {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-loader);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-charcoal);
+  pointer-events: none;
+}
+
+/* --- Content layer (counter + brand) --- */
+.loader-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.loader-counter {
+  font-family: var(--font-heading);
+  font-size: clamp(3.5rem, 3rem + 4vw, 7rem);
+  font-weight: 500;
+  line-height: 1;
+  color: var(--color-mint);
+  letter-spacing: -0.03em;
+}
+
+.loader-brand {
+  font-family: var(--font-heading);
+  font-size: var(--text-xl);
+  font-weight: 400;
+  color: var(--color-white);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0;
+}
+
+/* --- Curtain panels --- */
+.loader-curtain {
+  position: fixed;
+  left: 0;
+  right: 0;
+  height: 50vh;
+  z-index: 1;
+  background-color: var(--color-charcoal);
+}
+
+.loader-curtain--top {
+  top: 0;
+}
+
+.loader-curtain--bottom {
+  bottom: 0;
+}

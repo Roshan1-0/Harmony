@@ -1,0 +1,24 @@
+/* ============================================
+   SplitText — Reusable text splitting component
+   ============================================ */
+
+.split-text {
+  display: block;
+}
+
+.split-text--inline {
+  display: inline;
+}
+
+.split-word,
+.split-char {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+}
+
+.split-word__inner,
+.split-char__inner {
+  display: inline-block;
+  will-change: transform, opacity;
+}

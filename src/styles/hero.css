@@ -1,0 +1,157 @@
+/* ============================================
+   Hero — Full viewport opening section
+   ============================================ */
+
+.hero {
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  padding-top: 6rem;
+  padding-bottom: var(--space-3xl);
+}
+
+/* --- Content --- */
+.hero-content {
+  width: 100%;
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: var(--container-padding);
+  position: relative;
+  z-index: 2;
+}
+
+.hero-heading {
+  font-family: var(--font-heading);
+  font-size: var(--text-display);
+  font-weight: 500;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  color: var(--color-charcoal);
+  max-width: 900px;
+  margin-left: 3%;
+}
+
+.hero-heading .split-word {
+  padding-bottom: 0.05em;
+}
+
+.hero-tagline {
+  margin-top: var(--space-lg);
+  font-size: var(--text-md);
+  color: var(--color-charcoal-60);
+  max-width: 480px;
+  line-height: 1.6;
+  margin-left: 5%;
+}
+
+/* --- Abstract decoration --- */
+.hero-decoration {
+  position: absolute;
+  right: -5%;
+  top: 15%;
+  width: 45vw;
+  max-width: 550px;
+  opacity: 0.12;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.hero-decoration svg {
+  width: 100%;
+  height: auto;
+}
+
+/* --- Scroll indicator --- */
+.hero-scroll-indicator {
+  position: absolute;
+  bottom: var(--space-xl);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-xs);
+  z-index: 2;
+}
+
+.hero-scroll-indicator span {
+  font-size: var(--text-xs);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-sage);
+  font-family: var(--font-body);
+  font-weight: 500;
+}
+
+.hero-scroll-line {
+  width: 1px;
+  height: 40px;
+  background: var(--color-sage);
+  animation: scrollPulse 2s ease-in-out infinite;
+  transform-origin: top;
+}
+
+@keyframes scrollPulse {
+  0% {
+    transform: scaleY(0);
+    transform-origin: top;
+  }
+  45% {
+    transform: scaleY(1);
+    transform-origin: top;
+  }
+  55% {
+    transform: scaleY(1);
+    transform-origin: bottom;
+  }
+  100% {
+    transform: scaleY(0);
+    transform-origin: bottom;
+  }
+}
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+  .hero {
+    padding-top: 5rem;
+    justify-content: flex-start;
+    padding-top: 30vh;
+  }
+
+  .hero-heading {
+    margin-left: 0;
+    text-align: center;
+    font-size: clamp(2.2rem, 1.5rem + 4vw, 3.5rem);
+  }
+
+  .hero-tagline {
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    max-width: 380px;
+  }
+
+  .hero-decoration {
+    display: none;
+  }
+
+  .hero-scroll-indicator {
+    bottom: var(--space-lg);
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .hero-heading {
+    max-width: 700px;
+  }
+
+  .hero-decoration {
+    width: 38vw;
+    right: -3%;
+    top: 18%;
+  }
+}
